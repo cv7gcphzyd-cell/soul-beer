@@ -7,47 +7,51 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: system-ui, sans-serif; }
-    .glow { text-shadow: 0 0 30px #facc15; }
+    .glow { text-shadow: 0 0 40px #facc15; }
+    .card { transition: all 0.3s; }
+    .card:hover { transform: scale(1.05); }
   </style>
 </head>
-<body class="bg-[#1a0f08] text-white min-h-screen overflow-hidden">
+<body class="bg-[#1a0f08] text-white min-h-screen overflow-hidden relative">
 
-  <!-- Background -->
-  <div class="fixed inset-0 bg-[url('/assets/main-background.png')] bg-cover bg-center opacity-80"></div>
+  <div class="fixed inset-0 bg-[url('/assets/main-background.png')] bg-cover bg-center opacity-90"></div>
 
-  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 text-center">
+  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
 
     <!-- Splash -->
-    <div id="splash">
-      <div class="text-9xl mb-6 animate-bounce">🍺</div>
+    <div id="splash" class="text-center">
+      <div class="text-9xl mb-8 animate-bounce">🍺</div>
       <h1 class="text-8xl font-black glow text-yellow-400">POUR</h1>
-      <p class="text-xl mt-4">Finding your soul brew...</p>
+      <p class="text-xl mt-4">Discover your soul brew...</p>
     </div>
 
     <!-- Hero -->
-    <div id="hero" class="hidden">
+    <div id="hero" class="hidden text-center">
       <h1 class="text-6xl md:text-8xl font-black leading-none mb-10 glow">
         WHAT’S YOUR<br><span class="text-yellow-400">POUR</span> PERSONALITY?
       </h1>
-      <button onclick="startQuiz()" class="mt-10 px-16 py-8 bg-yellow-400 text-black font-bold text-3xl rounded-3xl">
+      <button onclick="startQuiz()" 
+        class="mt-12 px-16 py-8 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-3xl rounded-3xl shadow-2xl">
         START THE QUIZ 🍺
       </button>
     </div>
 
     <!-- Quiz -->
-    <div id="quiz" class="hidden w-full max-w-xl">
-      <p id="progress" class="text-white/60 mb-4"></p>
-      <h2 id="question" class="text-4xl font-bold mb-10"></h2>
+    <div id="quiz" class="hidden w-full max-w-2xl">
+      <div class="text-center mb-10">
+        <p id="progress" class="text-white/60"></p>
+        <h2 id="question" class="text-4xl font-bold mt-4"></h2>
+      </div>
       <div id="options" class="space-y-4"></div>
     </div>
 
     <!-- Result -->
     <div id="result" class="hidden fixed inset-0 flex flex-col items-center justify-center bg-black">
-      <video id="video" autoplay loop muted class="absolute inset-0 w-full h-full object-cover opacity-70"></video>
+      <video id="result-video" autoplay loop muted class="absolute inset-0 w-full h-full object-cover opacity-75"></video>
       <div class="relative z-10 text-center px-6">
         <h1 id="beer-name" class="text-8xl font-black text-yellow-400 mb-4"></h1>
-        <p id="beer-tag" class="text-3xl mb-12"></p>
-        <button onclick="restart()" class="px-16 py-7 bg-yellow-400 text-black font-bold text-2xl rounded-full">
+        <p id="beer-tag" class="text-4xl mb-12"></p>
+        <button onclick="restartQuiz()" class="px-16 py-7 bg-yellow-400 text-black font-bold text-2xl rounded-full hover:bg-yellow-300">
           POUR AGAIN 🍺
         </button>
       </div>
@@ -61,7 +65,7 @@
     const questions = [
       { q: "What's your ideal weekend?", options: ["Party with friends", "Beach day", "Cricket match", "Quiet pub"] },
       { q: "You prefer your beer?", options: ["Bold & Strong", "Light & Fresh", "Strong & Royal", "Anytime fun"] },
-      { q: "Favourite hangout?", options: ["Loud Pub", "Beach Bar", "Stadium", "Home"] }
+      { q: "Favourite hangout place?", options: ["Loud Pub", "Beach Bar", "Stadium", "Home Balcony"] }
     ];
 
     function startQuiz() {
@@ -83,12 +87,12 @@
 
       q.options.forEach((opt, i) => {
         const btn = document.createElement('button');
-        btn.className = "w-full p-8 bg-white/10 hover:bg-white/20 rounded-3xl text-xl transition-all";
+        btn.className = "w-full p-8 bg-white/10 hover:bg-white/20 rounded-3xl text-2xl card";
         btn.textContent = opt;
         btn.onclick = () => {
           if (i === 0) scores.budweiser += 2;
           else if (i === 1) scores.corona += 2;
-          else scores.kingfisher += 2;
+          else if (i === 2) scores.kingfisher += 2;
 
           if (current < 2) {
             current++;
@@ -106,8 +110,9 @@
       const res = document.getElementById('result');
       res.classList.remove('hidden');
 
-      let winner = scores.budweiser >= scores.corona && scores.budweiser >= scores.kingfisher ? 'budweiser' : 
-                   scores.corona >= scores.kingfisher ? 'corona' : 'kingfisher';
+      let winner = 'budweiser';
+      if (scores.corona > scores.budweiser) winner = 'corona';
+      if (scores.kingfisher > scores.budweiser && scores.kingfisher > scores.corona) winner = 'kingfisher';
 
       const data = {
         budweiser: { name: "Budweiser", tag: "The King of Beers", video: "budweiser.mp4" },
@@ -117,14 +122,14 @@
 
       document.getElementById('beer-name').textContent = data[winner].name;
       document.getElementById('beer-tag').textContent = data[winner].tag;
-      document.getElementById('video').src = `/assets/${data[winner].video}`;
+      document.getElementById('result-video').src = `/assets/${data[winner].video}`;
     }
 
-    function restart() {
+    function restartQuiz() {
       location.reload();
     }
 
-    // Auto start
+    // Start automatically
     setTimeout(() => {
       document.getElementById('splash').style.display = 'none';
       document.getElementById('hero').classList.remove('hidden');
