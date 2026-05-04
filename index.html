@@ -12,37 +12,126 @@
 </head>
 <body class="bg-[#1a0f08] text-white min-h-screen overflow-hidden relative">
 
+  <!-- Background -->
   <div class="fixed inset-0 bg-[url('main-background.png')] bg-cover bg-center opacity-90"></div>
 
-  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 text-center">
 
     <!-- Splash -->
-    <div id="splash" class="text-center">
+    <div id="splash">
       <div class="text-8xl mb-6 animate-bounce">🍺</div>
       <h1 class="text-7xl font-black glow text-yellow-400">POUR</h1>
+      <p class="text-lg mt-4">Discover your soul brew...</p>
     </div>
 
     <!-- Hero -->
-    <div id="hero" class="hidden text-center">
-      <img src="beer-spilled.png" alt="Spilled Beer" class="mx-auto mb-8 w-64 md:w-80 drop-shadow-2xl" style="transform:rotate(12deg);">
+    <div id="hero" class="hidden">
+      <img src="beer-spilled.png" alt="Spilled Beer" class="mx-auto mb-8 w-64 md:w-80 drop-shadow-2xl" style="transform: rotate(12deg);">
       <h1 class="text-5xl md:text-7xl font-black leading-tight mb-8 glow">
         WHAT’S YOUR<br><span class="text-yellow-400">POUR</span> PERSONALITY?
       </h1>
-      <button onclick="startQuiz()" class="mt-8 px-12 py-6 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-2xl rounded-3xl">
+      <button onclick="startQuiz()" 
+        class="mt-10 px-12 py-6 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-2xl rounded-3xl shadow-2xl">
         START THE QUIZ 🍺
       </button>
     </div>
 
-    <!-- Quiz & Result code same as before... (shortened for space) -->
-    <!-- ... (full code is long, but you can use previous version) -->
+    <!-- Quiz -->
+    <div id="quiz" class="hidden w-full max-w-xl">
+      <p id="progress" class="text-white/60 mb-2"></p>
+      <h2 id="question" class="text-3xl md:text-4xl font-bold mb-10"></h2>
+      <div id="options" class="space-y-4"></div>
+    </div>
 
+    <!-- Result -->
+    <div id="result" class="hidden fixed inset-0 flex flex-col items-center justify-center bg-black">
+      <video id="result-video" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-75"></video>
+      <div class="relative z-10 text-center px-6">
+        <h1 id="beer-name" class="text-6xl md:text-8xl font-black text-yellow-400 mb-4"></h1>
+        <p id="beer-tag" class="text-2xl md:text-4xl mb-12"></p>
+        <button onclick="restartQuiz()" class="px-12 py-6 bg-yellow-400 text-black font-bold text-xl md:text-2xl rounded-full">
+          POUR AGAIN 🍺
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Simple alert for now
+    let current = 0;
+    let scores = { budweiser: 0, corona: 0, kingfisher: 0 };
+
+    const questions = [
+      { q: "What's your ideal weekend vibe?", options: ["Party with friends", "Beach day", "Cricket match", "Quiet pub"] },
+      { q: "You prefer your beer?", options: ["Cold & Bold", "Light & Fresh", "Strong & Royal", "Anytime fun"] },
+      { q: "Favourite hangout place?", options: ["Loud Pub", "Beach Bar", "Stadium", "Home Balcony"] }
+    ];
+
     function startQuiz() {
-      alert("Quiz Started! 🎉\n\nBackground & Spilled Bottle should be visible now.");
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('hero').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      current = 0;
+      scores = { budweiser: 0, corona: 0, kingfisher: 0 };
+      showQuestion();
     }
+
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById('question').textContent = q.q;
+      document.getElementById('progress').textContent = `Question ${current + 1} of 3`;
+
+      const container = document.getElementById('options');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full p-6 md:p-8 bg-white/10 hover:bg-white/20 rounded-3xl text-xl md:text-2xl transition-all";
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (i === 0) scores.budweiser += 2;
+          else if (i === 1) scores.corona += 2;
+          else if (i === 2) scores.kingfisher += 2;
+
+          if (current < 2) {
+            current++;
+            showQuestion();
+          } else {
+            showResult();
+          }
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      document.getElementById('quiz').classList.add('hidden');
+      const res = document.getElementById('result');
+      res.classList.remove('hidden');
+
+      let winner = 'budweiser';
+      if (scores.corona > scores.budweiser) winner = 'corona';
+      if (scores.kingfisher > scores.budweiser && scores.kingfisher > scores.corona) winner = 'kingfisher';
+
+      const data = {
+        budweiser: { name: "Budweiser", tag: "The King of Beers", video: "budweiser.mp4" },
+        corona: { name: "Corona", tag: "Find Your Beach", video: "corona.mp4" },
+        kingfisher: { name: "Kingfisher", tag: "The True Taste of India", video: "kingfisher.mp4" }
+      };
+
+      document.getElementById('beer-name').textContent = data[winner].name;
+      document.getElementById('beer-tag').textContent = data[winner].tag;
+      document.getElementById('result-video').src = data[winner].video;
+    }
+
+    function restartQuiz() {
+      location.reload();
+    }
+
+    // Auto start after splash
+    setTimeout(() => {
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('hero').classList.remove('hidden');
+    }, 2200);
   </script>
 </body>
 </html>
