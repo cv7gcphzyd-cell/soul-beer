@@ -8,7 +8,7 @@
   <style>
     body { font-family: system-ui, sans-serif; }
     .glow { text-shadow: 0 0 30px #facc15; }
-    video { max-height: 65vh; width: 100%; object-fit: cover; }
+    .bottle { max-height: 280px; }
   </style>
 </head>
 <body class="bg-[#1a0f08] text-white min-h-screen overflow-hidden relative">
@@ -19,17 +19,20 @@
 
     <!-- Splash -->
     <div id="splash" class="text-center">
-      <div class="text-7xl mb-6 animate-bounce">🍺</div>
+      <div class="text-7xl mb-4 animate-bounce">🍺</div>
       <h1 class="text-6xl font-black glow text-yellow-400">POUR</h1>
     </div>
 
     <!-- Hero -->
     <div id="hero" class="hidden text-center">
-      <img src="beer-spilled.png" alt="Spilled Beer" class="mx-auto mb-8 w-56 md:w-72 drop-shadow-2xl" style="transform: rotate(12deg);">
-      <h1 class="text-4xl md:text-6xl font-black leading-tight mb-8 glow">
+      <img src="beer-spilled.png" alt="Spilled Beer" class="bottle mx-auto mb-6 drop-shadow-2xl" style="transform: rotate(12deg);">
+      
+      <h1 class="text-4xl md:text-5xl font-black leading-tight mb-6 glow">
         WHAT’S YOUR<br><span class="text-yellow-400">POUR</span> PERSONALITY?
       </h1>
-      <button onclick="startQuiz()" class="mt-8 px-12 py-6 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xl md:text-2xl rounded-3xl">
+      
+      <button onclick="startQuiz()" 
+        class="px-12 py-5 bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xl rounded-3xl shadow-2xl">
         START THE QUIZ 🍺
       </button>
     </div>
@@ -37,17 +40,17 @@
     <!-- Quiz -->
     <div id="quiz" class="hidden w-full max-w-xl">
       <p id="progress" class="text-white/60 mb-2"></p>
-      <h2 id="question" class="text-2xl md:text-3xl font-bold mb-8"></h2>
+      <h2 id="question" class="text-2xl font-bold mb-8"></h2>
       <div id="options" class="space-y-4"></div>
     </div>
 
     <!-- Result -->
     <div id="result" class="hidden fixed inset-0 flex flex-col items-center justify-center bg-black">
-      <video id="result-video" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover" preload="metadata"></video>
-      <div class="relative z-10 text-center px-6">
-        <h1 id="beer-name" class="text-5xl md:text-7xl font-black text-yellow-400 mb-4"></h1>
-        <p id="beer-tag" class="text-xl md:text-2xl mb-12"></p>
-        <button onclick="restartQuiz()" class="px-12 py-6 bg-yellow-400 text-black font-bold text-xl md:text-2xl rounded-full">
+      <video id="result-video" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+      <div class="relative z-10 text-center px-6 pt-12">
+        <h1 id="beer-name" class="text-5xl font-black text-yellow-400 mb-4"></h1>
+        <p id="beer-tag" class="text-xl mb-12"></p>
+        <button onclick="restartQuiz()" class="px-12 py-5 bg-yellow-400 text-black font-bold text-xl rounded-full">
           POUR AGAIN 🍺
         </button>
       </div>
