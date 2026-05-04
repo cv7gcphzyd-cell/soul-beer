@@ -10,61 +10,43 @@ function App() {
     setResult(beer);
     setStep('result');
   };
-  const restart = () => {
-    setResult(null);
-    setStep('hero');
-  };
-
-  const resultData = {
-    budweiser: { name: "Budweiser", tag: "The King of Beers", video: "/assets/budweiser.mp4" },
-    corona: { name: "Corona", tag: "Find Your Beach", video: "/assets/corona.mp4" },
-    kingfisher: { name: "Kingfisher", tag: "The True Taste of India", video: "/assets/kingfisher.mp4" }
-  };
+  const restart = () => setStep('hero');
 
   return (
-    <div className="min-h-screen bg-[#1a0f08] text-white overflow-hidden relative">
-      <div className="fixed inset-0 bg-[url('/assets/main-background.png')] bg-cover bg-center opacity-80" />
+    <div className="min-h-screen bg-[#1a0f08] text-white overflow-hidden">
+      <div className="fixed inset-0 bg-[url('/assets/main-background.png')] bg-cover opacity-80" />
 
       <AnimatePresence mode="wait">
         {step === 'splash' && (
-          <motion.div exit={{ opacity: 0 }} className="fixed inset-0 flex items-center justify-center z-50 bg-black">
-            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2 }} className="text-center">
+          <motion.div exit={{ opacity: 0 }} className="fixed inset-0 flex items-center justify-center bg-black z-50">
+            <div className="text-center">
               <div className="text-9xl mb-6">🍺</div>
-              <h1 className="text-8xl font-black text-beer">POUR</h1>
-            </motion.div>
+              <h1 className="text-8xl font-black text-yellow-400">POUR</h1>
+            </div>
           </motion.div>
         )}
 
         {step === 'hero' && (
-          <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 relative z-10">
+          <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-6xl md:text-8xl font-black leading-none mb-10">
               WHAT’S YOUR<br />
-              <span className="text-beer">POUR</span> PERSONALITY?
+              <span className="text-yellow-400">POUR</span> PERSONALITY?
             </h1>
-            <motion.button 
-              onClick={startQuiz}
-              whileHover={{ scale: 1.1 }}
-              className="px-16 py-8 bg-beer text-darkbeer font-bold text-3xl rounded-3xl"
-            >
+            <motion.button onClick={startQuiz} className="px-16 py-8 bg-yellow-400 text-black font-bold text-3xl rounded-3xl">
               START THE QUIZ 🍺
             </motion.button>
           </div>
         )}
 
         {step === 'quiz' && (
-          <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
-            <div className="text-center max-w-md">
-              <h2 className="text-4xl font-bold mb-12">What's your ideal weekend?</h2>
-              <div className="space-y-4">
-                {["Party with friends", "Beach day", "Cricket match", "Chill at home"].map((opt, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => finishQuiz(i === 0 ? 'budweiser' : i === 1 ? 'corona' : 'kingfisher')}
-                    className="w-full p-8 bg-white/10 hover:bg-white/20 rounded-3xl text-xl"
-                  >
+          <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="text-center">
+              <h2 className="text-4xl mb-10">Choose one:</h2>
+              <div className="space-y-4 max-w-md mx-auto">
+                {["Party", "Beach", "Cricket", "Chill"].map((opt, i) => (
+                  <button key={i} onClick={() => finishQuiz(['budweiser','corona','kingfisher','budweiser'][i])} className="block w-full p-6 bg-white/10 hover:bg-white/20 rounded-2xl text-xl">
                     {opt}
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             </div>
@@ -72,18 +54,17 @@ function App() {
         )}
 
         {step === 'result' && result && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+          <div className="fixed inset-0 flex flex-col items-center justify-center bg-black z-50">
             <video autoPlay loop muted className="absolute inset-0 w-full h-full object-cover opacity-70">
-              <source src={resultData[result].video} type="video/mp4" />
+              <source src={`/assets/${result}.mp4`} type="video/mp4" />
             </video>
-            <div className="relative z-10 text-center px-6">
-              <h1 className="text-8xl font-black text-beer mb-6">{resultData[result].name}</h1>
-              <p className="text-4xl mb-12">{resultData[result].tag}</p>
-              <motion.button whileHover={{ scale: 1.1 }} onClick={restart} className="px-16 py-7 bg-beer text-darkbeer font-bold text-2xl rounded-full">
-                POUR AGAIN 🍺
+            <div className="relative z-10 text-center">
+              <h1 className="text-8xl font-black text-yellow-400">Your Beer</h1>
+              <motion.button onClick={restart} className="mt-10 px-12 py-6 bg-yellow-400 text-black font-bold text-2xl rounded-full">
+                PLAY AGAIN 🍺
               </motion.button>
             </div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
